@@ -1,0 +1,102 @@
+Given an array arr[] such that each element is in the range [0 - 9], find the minimum possible sum of two numbers formed using the elements of the array. All digits in the given array must be used to form the two numbers. Return a string without leading zeroes.
+
+Examples :
+
+Input: arr[] = [6, 8, 4, 5, 2, 3]
+Output: 604
+Explanation: The minimum sum is formed by numbers 358 and 246.
+Input: arr[] = [5, 3, 0, 7, 4]
+Output: 82
+Explanation: The minimum sum is formed by numbers 35 and 047.
+Input: arr[] = [9, 4]
+Output: 13
+Explanation: The minimum sum is formed by numbers 9 and 4.
+Constraints:
+1 ≤ arr.size() ≤ 106
+0 ≤ arr[i] ≤ 9
+
+SOLUTION - 
+class Solution {
+  public:
+    string minSum(vector<int> &arr) {
+        // code here
+        sort(arr.begin(),arr.end());
+        int ptr = 0;
+        int n = arr.size();
+        string a = "";
+        string b = "";
+        while(ptr < n){
+            string t1 = to_string(arr[ptr]);
+            a += t1;
+            ptr++;
+            if(ptr < n){
+                string t2 = to_string(arr[ptr]);
+                b += t2;
+                ptr++;
+            }
+        }
+        // cout<<a<<" "<<b<<endl;
+        string ans = "";
+        int carry = 0;
+        int i = a.length()-1;
+        int j = b.length()-1;
+        while(i >= 0 && j >= 0){
+            string s1(1,a[i]);
+            string s2(1,b[j]);
+            // cout<<s1<<" "<<s2<<endl;
+            int sum = stoi(s1) + stoi(s2);
+            // cout<<sum+carry<<endl;
+            if(sum+carry < 10){
+                ans += to_string(sum+carry);
+                carry = 0;
+            }else{
+                int rem = (sum+carry)%10;
+                ans += to_string(rem);
+                carry = 1;
+            }
+            i--;
+            j--;
+        }
+        if(i == 0){
+           string s(1,a[i]);        
+           int sum = stoi(s) + carry;
+           if(sum < 10){
+               ans += to_string(sum);
+               carry = 0;
+           }else{
+               string s = to_string(sum);
+               reverse(s.begin(),s.end());
+               ans += s;
+           }
+           carry = 0;
+        }else if(j == 0){
+           string s(1,b[j]);        
+           int sum = stoi(s) + carry;
+           if(sum < 10){
+               ans += to_string(sum);
+               carry = 0;
+           }else{
+               string s = to_string(sum);
+               reverse(s.begin(),s.end());
+               ans += s;
+           } 
+           carry = 0;
+        }
+        if(carry != 0){
+            ans += to_string(carry);
+        }
+        reverse(ans.begin(),ans.end());
+        int indx = -1;
+        for(int i=0;i<ans.length();i++){
+            if(ans[i] == '0'){
+                indx = i;
+            }else{
+                break;
+            }
+        }
+        if(indx != -1){
+            ans.erase(0,indx+1);
+        }
+        return ans;
+    }
+};
